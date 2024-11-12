@@ -1,0 +1,73 @@
+{
+  "menu": [
+    {
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "slug": "dashboard",
+      "url": "/"
+    },
+    {
+      "name": "Users",
+      "icon": "menu-icon tf-icons ti ti-users",
+      "slug": "users",
+      "submenu": [
+        {
+          "url": "users/list",
+          "name": "User List",
+          "slug": "users-list"
+        },
+        {
+          "url": "users/add",
+          "name": "Add New User",
+          "slug": "users-add"
+        }
+      ]
+    },
+    {
+      "name": "Donations",
+      "icon": "menu-icon tf-icons ti ti-id",
+      "slug": "donations",
+      "submenu": [
+        {
+          "url": "donations/list",
+          "name": "Received",
+          "slug": "donations-list"
+        },
+        {
+          "url": "donations/distribution",
+          "name": "Distributed",
+          "slug": "donations-distribution"
+        }
+      ]
+    },
+    {
+      "name": "Tithes/Offerings",
+      "icon": "menu-icon tf-icons ti ti-file-dollar",
+      "slug": "tithes-offerings",
+      "submenu": [
+        {
+          "url": "offerings/collection",
+          "name": "Collection",
+          "slug": "tithes-collection"
+        },
+        {
+          "url": "offerings/expenses",
+          "name": "Spendings/Expenses",
+          "slug": "tithes-spendings"
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "icon": "menu-icon tf-icons ti ti-layout-grid",
+      "slug": "reports",
+      "submenu": [
+        {
+          "url": "reports/financial",
+          "name": "Financial",
+          "slug": "reports-financial"
+        }
+      ]
+    }
+  ]
+}
