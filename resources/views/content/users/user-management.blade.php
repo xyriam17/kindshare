@@ -28,7 +28,8 @@
   'resources/assets/vendor/libs/cleavejs/cleave.js',
   'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.js',
-  'resources/assets/vendor/libs/dropzone/dropzone.js'
+  'resources/assets/vendor/libs/dropzone/dropzone.js',
+  'resources/assets/js/modal-edit-user.js',
 ])
 @endsection
 
@@ -79,7 +80,7 @@
         <input type="hidden" name="id" id="user_id">
         <div class="mb-6">
           <label class="form-label" for="add-user-fullname">Firstname</label>
-          <input type="text" class="form-control" id="firtsname" placeholder=" " name="firtsname" aria-label="John" />
+          <input type="text" class="form-control" id="firstname" placeholder=" " name="firstname" aria-label="John" />
         </div>
         <div class="mb-6">
           <label class="form-label" for="add-user-fullname">Middlename</label>
@@ -122,4 +123,6 @@
 
 
 </div>
+
+@include('_partials/_modals/modal-edit-user')
 @endsection

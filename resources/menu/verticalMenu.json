@@ -15,11 +15,6 @@
           "url": "users/list",
           "name": "User List",
           "slug": "users-list"
-        },
-        {
-          "url": "users/add",
-          "name": "Add New User",
-          "slug": "users-add"
         }
       ]
     },

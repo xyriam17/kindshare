@@ -97,11 +97,12 @@ class UserManagement extends Controller
       foreach ($users as $user) {
         $nestedData['id'] = $user->id;
         $nestedData['fake_id'] = ++$ids;
-        $nestedData['name'] = (empty($user->firtsname)) ? ($user->name) : ($user->firtsname . ' ' . $user->lastname);
+        $nestedData['name'] = (empty($user->firstname)) ? ($user->name) : ($user->firstname . ' ' . $user->lastname);
         $nestedData['email'] = $user->email;
         $nestedData['address'] = $user->address;
         $nestedData['contact_number'] = $user->contact_number;
         $nestedData['role'] = $user->role ? $user->role->guard_name : 'N/A';
+        $nestedData['photo'] = !empty($user->profile_photo_path) ? asset('uploads/images/' . $user->profile_photo_path) : asset('assets/img/logo.JPG');
         $data[] = $nestedData;
       }
     }
@@ -159,15 +160,12 @@ class UserManagement extends Controller
   {
     $userID = $request->id;
 
-    $validatedData = $request->validate([
-      'email' => 'required|unique:users',
-    ]);
 
     $dataSubmitted = [];
     if (empty($userID)) {
       $validator = Validator::make($request->all(), [
         'email' => 'required|unique:users',
-        'firtsname' => 'required|string|max:255',
+        'firstname' => 'required|string|max:255',
         'middlename' => 'nullable|string|max:255',
         'lastname' => 'required|string|max:255',
         'contact_number' => 'required|string|max:20',
@@ -184,7 +182,8 @@ class UserManagement extends Controller
     }
 
     $dataSubmitted = [
-      'firtsname'       =>  $request->firtsname,
+      'name'            =>  $request->firstname . ' ' . $request->lastname,
+      'firstname'       =>  $request->firstname,
       'middlename'      =>  $request->middlename,
       'lastname'        =>   $request->lastname,
       'email'           =>   $request->email,

@@ -80,9 +80,15 @@ $(function () {
             var $state = states[stateNum],
               $name = full['name'],
               $initials = $name.match(/\b\w/g) || [],
+              $photo = full['photo'],
               $output;
             $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-            $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
+            $output =
+              '<span class="avatar-initial rounded-circle bg-label-' +
+              $state +
+              '"><img class="rounded-circle" src="' +
+              $photo +
+              '"></span>';
 
             // Creates full output for row
             var $row_output =
@@ -148,8 +154,16 @@ $(function () {
           render: function (data, type, full, meta) {
             return (
               '<div class="d-flex align-items-center gap-50">' +
-              `<button  class="btn btn-sm btn-icon edit-record btn-text-secondary rounded-pill waves-effect" data-id="${full['id']}" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasAddUser"><i class="ti ti-eye"></i></button>` +
-              `<button class="btn btn-sm btn-icon delete-record btn-text-secondary rounded-pill waves-effect" data-id="${full['id']}"><i class="ti ti-trash"></i></button>` +
+              ` <div class="dropdown">
+              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti ti-dots-vertical"></i></button>
+              <div class="dropdown-menu" style="">
+                <a class="dropdown-item waves-effect edit-record" href="javascript:void(0);" data-id="${full['id']}" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasAddUser"><i class="ti ti-pencil me-1"></i> Edit</a>
+                <a class="dropdown-item waves-effect delete-record" href="javascript:void(0);" data-id="${full['id']}"><i class="ti ti-trash"></i> Delete</a>
+                <a class="dropdown-item waves-effect" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePassword"><i class="ti ti-lock"></i> Change Password</a>
+                 <a class="dropdown-item waves-effect edit-profile" href="javascript:void(0);" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#editUser"><i class="ti ti-photo"></i> Change Profile Photo</a>
+
+              </div>
+            </div>` +
               '</div>'
             );
           }
@@ -436,7 +450,7 @@ $(function () {
       var form = $('#addNewUserForm');
 
       form.find('#user_id').val(data.id);
-      form.find('#firtsname').val(data.firtsname);
+      form.find('#firstname').val(data.firstname);
       form.find('#middle').val(data.middlename);
       form.find('#lastname').val(data.lastname);
       form.find('#add-user-email').val(data.email);
@@ -454,7 +468,7 @@ $(function () {
     $.get(`${baseUrl}user-list\/${user_id}\/edit`, function (data) {
       var form = $('#addNewUserForm');
       form.find('#user_id').val(data.id);
-      form.find('#modalEditUserFirstName').val(data.firtsname);
+      form.find('#modalEditUserFirstName').val(data.firstname);
       form.find('#modalEditMiddlename').val(data.middlename);
       form.find('#modalEditUserLastName').val(data.lastname);
       form.find('#modalAddress').val(data.address);
@@ -470,6 +484,12 @@ $(function () {
     var form = $('#addNewUserForm');
     form.find('input').val('');
     $('#offcanvasAddUserLabel').html('Add User');
+  });
+
+  $(document).on('click', '.edit-profile', function () {
+    var user_id = $(this).data('id');
+    var form = $('.update-photo');
+    form.find('#user_id').val(user_id);
   });
 
   // Filter form control to default size
