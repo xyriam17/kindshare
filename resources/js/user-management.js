@@ -492,6 +492,48 @@ $(function () {
     form.find('#user_id').val(user_id);
   });
 
+  $(document).on('click', '#savePhoto', function () {
+    console.log('save photo');
+
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+    $.ajax({
+      data: $('.update-photo').serialize(),
+      url: `update-photo`,
+      type: 'POST',
+      success: function (status) {
+        // sweetalert
+        Swal.fire({
+          icon: 'success',
+          title: `Successfully ${status}!`,
+          text: `User ${status} Successfully.`,
+          customClass: {
+            confirmButton: 'btn btn-success'
+          },
+          willClose: () => {
+            location.reload();
+          }
+        });
+      },
+      error: function (err) {
+        console.log(err.responseJSON);
+
+        Swal.fire({
+          title: err.responseJSON.message,
+          text: err.responseJSON.message,
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-success'
+          }
+        });
+      }
+    });
+  });
+
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization
   setTimeout(() => {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\users;
 
+use Intervention\Image\Laravel\Facades\Image;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Spatie\Activitylog\Models\Activity;
 use Illuminate\Support\Facades\Auth;
 use Hash;
 use Illuminate\Support\Facades\Validator;
+
 
 
 
@@ -237,5 +239,48 @@ class UserManagement extends Controller
     }
 
     return response()->json(['message' => 'Something went wrong', 'error' => 'Please try again later'], 402);
+  }
+
+  public function update_profile(Request $request)
+  {
+
+    $data = $request->input('profile-photo');
+
+    $base64Image = $request->input('profile-photo'); // Assuming the input name is 'image'
+
+    // Check if base64 data exists
+    if ($base64Image) {
+      // Remove "data:image/jpeg;base64," part if present
+      if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+        $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+        $type = strtolower($type[1]); // jpg, png, gif
+
+        // Decode the base64 string
+        $imageData = base64_decode($base64Image);
+
+        // Verify that the decoded data is a valid image
+        if ($imageData === false) {
+          return response()->json(['message' => 'Base64 decode failed'], 400);
+        }
+        // Define a filename and path
+        $fileName = 'image_' . time() . '.' . $type;
+        $filePath = 'uploads/images/' . $fileName;
+
+        // Save the image using file_put_contents
+        if (file_put_contents(public_path($filePath), $imageData)) {
+          // Save path to database
+          $user = User::find($request->input('id'));
+          $user->profile_photo_path = $fileName;
+          $user->save();
+          return response()->json(['message' => 'Image uploaded successfully!', 'success' => 'Upload'], 200);
+        } else {
+          return response()->json(['message' => 'Image upload failed'], 500);
+        }
+      } else {
+        return response()->json(['message' => 'Invalid image format'], 400);
+      }
+    } else {
+      return response()->json(['message' => 'No image data provided'], 400);
+    }
   }
 }

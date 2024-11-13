@@ -21,7 +21,7 @@
           </form>
 
           <div class="col-12 text-center mt-20">
-            <button type="submit" class="btn btn-primary me-3" id="savePhoto"> <i class="ti ti-save"></i>Save</button>
+            <button type="button" class="btn btn-primary me-3" id="savePhoto"> <i class="ti ti-device-floppy"></i>Save</button>
             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
         </div>
 

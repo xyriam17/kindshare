@@ -358,4 +358,5 @@ Route::get('/auth/reset-password-basic', [ResetPasswordBasic::class, 'index'])->
 Route::resource('/user-list', UserManagement::class)->middleware('auth');
 Route::get('/users/list', [UserManagement::class, 'UserManagement'])->name('users-list')->middleware('auth');
 Route::post('/users/add-update ', [UserManagement::class, 'update'])->name('users-update')->middleware('auth');
+Route::post('/users/update-photo ', [UserManagement::class, 'update_profile'])->name('update-photo')->middleware('auth');
 Route::get('/user/view/{id}', [UserManagement::class, 'view'])->name('user-view')->middleware('auth');
