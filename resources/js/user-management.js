@@ -407,26 +407,36 @@ $(function () {
     }).then(function (result) {
       if (result.value) {
         // delete the data
+
         $.ajax({
           type: 'DELETE',
           url: `${baseUrl}user-list/${user_id}`,
-          success: function () {
+          success: function (respsonse) {
             dt_user.draw();
+
+            Swal.fire({
+              icon: respsonse.status,
+              title: respsonse.label,
+              text: respsonse.message,
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            });
           },
           error: function (error) {
             console.log(error);
           }
         });
 
-        // success sweetalert
-        Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'The user has been deleted!',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        });
+        // // success sweetalert
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Deleted!',
+        //   text: 'The user has been deleted!',
+        //   customClass: {
+        //     confirmButton: 'btn btn-success'
+        //   }
+        // });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire({
           title: 'Cancelled',
@@ -509,8 +519,8 @@ $(function () {
         // sweetalert
         Swal.fire({
           icon: 'success',
-          title: `Successfully ${status}!`,
-          text: `User ${status} Successfully.`,
+          title: `${status.message}!`,
+          text: `${status.message}`,
           customClass: {
             confirmButton: 'btn btn-success'
           },

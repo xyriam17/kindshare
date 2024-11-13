@@ -207,7 +207,17 @@ class UserManagement extends Controller
    */
   public function destroy($id)
   {
+    if (Auth::user()->id == $id) {
+      return response()->json(['status' => 'error', 'label' => 'Permission Denied', 'message' => 'You cannot delete your own account'], 200);
+    }
+    if (Auth::user()->role_id !== 3) {
+      return response()->json(['status' => 'error', 'label'  => 'Permission Denied',  'message' => 'You do not have permission to delete user'], 200);
+    }
     $users = User::where('id', $id)->delete();
+
+    if ($users) {
+      return response()->json(['status' => 'success', 'message' => 'User deleted successfully', 'label' => 'Delete'], 200);
+    }
   }
 
   public function view($id)
@@ -244,7 +254,7 @@ class UserManagement extends Controller
   public function update_profile(Request $request)
   {
 
-    $data = $request->input('profile-photo');
+
 
     $base64Image = $request->input('profile-photo'); // Assuming the input name is 'image'
 
