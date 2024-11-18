@@ -360,3 +360,4 @@ Route::get('/users/list', [UserManagement::class, 'UserManagement'])->name('user
 Route::post('/users/add-update ', [UserManagement::class, 'update'])->name('users-update')->middleware('auth');
 Route::post('/users/update-photo ', [UserManagement::class, 'update_profile'])->name('update-photo')->middleware('auth');
 Route::get('/user/view/{id}', [UserManagement::class, 'view'])->name('user-view')->middleware('auth');
+Route::post('/users/update-password ', [UserManagement::class, 'updatePassword'])->name('update-password')->middleware('auth');

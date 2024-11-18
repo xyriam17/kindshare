@@ -8,9 +8,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Support\Facades\Auth;
-use Hash;
+
 use Illuminate\Support\Facades\Validator;
 
 
@@ -254,8 +255,6 @@ class UserManagement extends Controller
   public function update_profile(Request $request)
   {
 
-
-
     $base64Image = $request->input('profile-photo'); // Assuming the input name is 'image'
 
     // Check if base64 data exists
@@ -292,5 +291,28 @@ class UserManagement extends Controller
     } else {
       return response()->json(['message' => 'No image data provided'], 400);
     }
+  }
+
+  public function updatePassword(Request $request)
+  {
+
+    $validator = Validator::make($request->all(), [
+      'password' => 'required|min:8|confirmed',
+      'password_confirmation' => 'required|min:8',
+    ]);
+    if ($validator->fails()) {
+      return response()->json([
+        'message' => 'Validation Error',
+        'errors' => $validator->errors()
+      ], 422);
+    }
+    $user = User::find($request->input('user_id'));
+    if ($user) {
+      $user->password = bcrypt($request->input('password'));
+      $user->save();
+      return response()->json(['message' => 'Password updated successfully', 'title' => 'Password Updated', 'status' => 'success'], 200);
+    }
+
+    return response()->json(['message' => 'Something went wrong please try again later', 'title' => 'Something went wrong', 'status' => 'error'], 200);
   }
 }

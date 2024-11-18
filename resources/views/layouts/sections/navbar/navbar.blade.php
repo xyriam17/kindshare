@@ -155,7 +155,7 @@ $navbarDetached = ($navbarDetached ?? '');
                     <div class="flex-grow-1">
                       <h6 class="mb-0">
                         @if (Auth::check())
-                          {{ Auth::user()->firtsname }}
+                          {{ Auth::user()->firstname }}
                         @else
                           John Doe
                         @endif

@@ -80,11 +80,11 @@
         <input type="hidden" name="id" id="user_id">
         <div class="mb-6">
           <label class="form-label" for="add-user-fullname">Firstname</label>
-          <input type="text" class="form-control" id="firstname" placeholder=" " name="firstname" aria-label="John" />
+          <input type="text" class="form-control" id="firstname" placeholder=" " name="firstname" aria-label="" />
         </div>
         <div class="mb-6">
           <label class="form-label" for="add-user-fullname">Middlename</label>
-          <input type="text" class="form-control" id="middle" placeholder="" name="middlename" aria-label="Albino" />
+          <input type="text" class="form-control" id="middlename" placeholder="" name="middlename" aria-label="" />
         </div>
         <div class="mb-6">
           <label class="form-label" for="add-user-fullname">Lastname</label>
@@ -92,14 +92,14 @@
         </div>
         <div class="mb-6">
           <label class="form-label" for="add-user-email">Email</label>
-          <input type="email" name="email" id="add-user-email" class="form-control" placeholder="" aria-label=""  />
+          <input type="email" name="email" id="email" class="form-control" placeholder="" aria-label=""  />
         </div>
         <div class="mb-6">
           <label class="form-label" for="add-user-contact">Contact</label>
-          <input type="text" id="add-user-contact" class="form-control phone-mask" placeholder="+1 (609) 988-44-11" aria-label="" name="contact_number" />
+          <input type="text" id="contact_number" class="form-control phone-mask" placeholder="+1 (609) 988-44-11" aria-label="" name="contact_number" />
         </div>
           <div class="mb-6">
-          <label class="form-label" for="add-user-contact">Adrress</label>
+          <label class="form-label" for="address">Adrress</label>
           <textarea class="form-control" name="address" id="address"></textarea>
 
         </div>
@@ -125,4 +125,6 @@
 </div>
 
 @include('_partials/_modals/modal-edit-user')
+@include('_partials/_modals/modal-edit-password')
+
 @endsection

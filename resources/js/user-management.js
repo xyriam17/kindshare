@@ -159,7 +159,7 @@ $(function () {
               <div class="dropdown-menu" style="">
                 <a class="dropdown-item waves-effect edit-record" href="javascript:void(0);" data-id="${full['id']}" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasAddUser"><i class="ti ti-pencil me-1"></i> Edit</a>
                 <a class="dropdown-item waves-effect delete-record" href="javascript:void(0);" data-id="${full['id']}"><i class="ti ti-trash"></i> Delete</a>
-                <a class="dropdown-item waves-effect" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#changePassword"><i class="ti ti-lock"></i> Change Password</a>
+                <a class="dropdown-item waves-effect edit-password" href="javascript:void(0);" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#changePassword"><i class="ti ti-lock"></i> Change Password</a>
                  <a class="dropdown-item waves-effect edit-profile" href="javascript:void(0);" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#editUser"><i class="ti ti-photo"></i> Change Profile Photo</a>
 
               </div>
@@ -427,16 +427,6 @@ $(function () {
             console.log(error);
           }
         });
-
-        // // success sweetalert
-        // Swal.fire({
-        //   icon: 'success',
-        //   title: 'Deleted!',
-        //   text: 'The user has been deleted!',
-        //   customClass: {
-        //     confirmButton: 'btn btn-success'
-        //   }
-        // });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire({
           title: 'Cancelled',
@@ -455,36 +445,18 @@ $(function () {
     var user_id = $(this).data('id');
 
     $('#offcanvasAddUserLabel').html('Update User');
-
     $.get(`${baseUrl}user-list\/${user_id}\/edit`, function (data) {
       var form = $('#addNewUserForm');
-
       form.find('#user_id').val(data.id);
       form.find('#firstname').val(data.firstname);
-      form.find('#middle').val(data.middlename);
+      form.find('#middlename').val(data.middlename);
       form.find('#lastname').val(data.lastname);
-      form.find('#add-user-email').val(data.email);
-      form.find('#add-user-email').attr('disabled', true);
-      form.find('#add-user-contact').val(data.contact_number);
+      form.find('#email').val(data.email);
+      form.find('#email').attr('disabled', true);
+      form.find('#contact_number').val(data.contact_number);
       form.find('#address').val(data.address);
       form.find('#user-role').val(data.role_id);
       console.log(data);
-    });
-  });
-  // edit record
-  $(document).on('click', '#editBtn', function () {
-    var user_id = $(this).data('id');
-    console.log(user_id);
-    $.get(`${baseUrl}user-list\/${user_id}\/edit`, function (data) {
-      var form = $('#addNewUserForm');
-      form.find('#user_id').val(data.id);
-      form.find('#modalEditUserFirstName').val(data.firstname);
-      form.find('#modalEditMiddlename').val(data.middlename);
-      form.find('#modalEditUserLastName').val(data.lastname);
-      form.find('#modalAddress').val(data.address);
-      form.find('#modalEditUserPhone').val(data.contact_number);
-      form.find('#modalEditRole').val(data.role.id);
-      form.find('#modalEditUserName').val(data.email).attr('disabled', true);
     });
   });
 
@@ -498,13 +470,18 @@ $(function () {
 
   $(document).on('click', '.edit-profile', function () {
     var user_id = $(this).data('id');
+
     var form = $('.update-photo');
     form.find('#user_id').val(user_id);
   });
 
-  $(document).on('click', '#savePhoto', function () {
-    console.log('save photo');
+  $(document).on('click', '.edit-password', function () {
+    var user_id = $(this).data('id');
+    var form = $('.update-password');
+    form.find('#user_id').val(user_id);
+  });
 
+  $(document).on('click', '#savePhoto', function () {
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -544,6 +521,39 @@ $(function () {
     });
   });
 
+  $(document).on('click', '#updatePassword', function () {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+    let form = $('.update-password');
+
+    $.ajax({
+      data: $('.update-password').serialize(),
+      url: `update-password`,
+      type: 'POST',
+      success: function (status) {
+        // sweetalert
+        Swal.fire({
+          icon: `${status.message}`,
+          title: `${status.message}!`,
+          text: `${status.message}`,
+          customClass: {
+            confirmButton: 'btn btn-success'
+          },
+          willClose: () => {
+            location.reload();
+          }
+        });
+      },
+      error: function (err) {
+        errorResponse(err, form);
+      }
+    });
+  });
+
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization
   setTimeout(() => {
@@ -558,7 +568,7 @@ $(function () {
     phoneMaskList.forEach(function (phoneMask) {
       new Cleave(phoneMask, {
         phone: true,
-        phoneRegionCode: 'US'
+        phoneRegionCode: 'PH'
       });
     });
   }
@@ -566,7 +576,7 @@ $(function () {
 
 $('#addNewUserForm').on('submit', function (e) {
   e.preventDefault();
-  console.log('submit');
+
   // ajax setup
   $.ajaxSetup({
     headers: {
@@ -593,16 +603,18 @@ $('#addNewUserForm').on('submit', function (e) {
       });
     },
     error: function (err) {
-      console.log(err.responseJSON);
-
-      Swal.fire({
-        title: err.responseJSON.message,
-        text: err.responseJSON.message,
-        icon: 'error',
-        customClass: {
-          confirmButton: 'btn btn-success'
-        }
-      });
+      errorResponse(err, $('#addNewUserForm'));
     }
   });
 });
+
+function errorResponse(err, form) {
+  let errors = err.responseJSON.errors;
+  form.find('.invalid-feedback').remove();
+  for (let error in errors) {
+    if (errors.hasOwnProperty(error)) {
+      form.find(`#${error}`).addClass('invalid is-invalid').removeClass('valid is-valid mb-6');
+      $('<div class="invalid-feedback">' + errors[error] + '<div>').insertAfter(form.find(`#${error}`));
+    }
+  }
+}
