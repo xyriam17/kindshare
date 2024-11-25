@@ -226,8 +226,8 @@ class DonationController extends Controller
         $nestedData['fake_id'] = ++$ids;
         $nestedData['donor'] =  (!empty($donor->name && $donor) ? $donor->name : 'Anonymous');
         $nestedData['amount'] = $donation->amount;
-        $nestedData['payment'] = 'gcash';
-        $nestedData['date'] = date('Y-m-d', strtotime($donation->created_at));
+        $nestedData['payment'] = 'GCASH';
+        $nestedData['date'] = date('F d, Y h:i:s A', strtotime($donation->created_at));
         $nestedData['status'] = $donation->status;
         $data[] = $nestedData;
       }

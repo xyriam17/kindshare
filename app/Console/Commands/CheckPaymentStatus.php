@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Donations;
+use App\Models\RunningBalance;
 
 class CheckPaymentStatus extends Command
 {
@@ -47,10 +48,12 @@ class CheckPaymentStatus extends Command
 
       if ($status === 'paid') {
         $donation->update(['status' => 'paid']);
+        $runningBalance = RunningBalance::first();
+
+        $runningBalance->update(['previous_balance' =>   $runningBalance->current_balance,  'current_balance' => $runningBalance->current_balance + $donation->amount]);
       } elseif ($status === 'failed') {
         $donation->update(['status' => 'failed']);
       }
-
       if ($donation->created_at < $newDate &&  $donation->status === 'pending') {
         $donation->update(['status' => 'failed']);
       }

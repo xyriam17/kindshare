@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\RunningBalance;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -34,6 +35,10 @@ class DatabaseSeeder extends Seeder
       ],
     ]);
 
+    RunningBalance::create([
+      'previous_balance' => 0,
+      'current_balance' => 0,
+    ]);
     //Seed Default User
     User::create([
       'name' => 'Merriam Mae A. Salas',
