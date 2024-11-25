@@ -80,18 +80,11 @@ use App\Http\Controllers\pages\MiscUnderMaintenance;
 use App\Http\Controllers\pages\MiscComingSoon;
 use App\Http\Controllers\pages\MiscNotAuthorized;
 use App\Http\Controllers\authentications\LoginBasic;
-use App\Http\Controllers\authentications\LoginCover;
-use App\Http\Controllers\authentications\RegisterBasic;
-use App\Http\Controllers\authentications\RegisterCover;
-use App\Http\Controllers\authentications\RegisterMultiSteps;
 use App\Http\Controllers\authentications\VerifyEmailBasic;
-use App\Http\Controllers\authentications\VerifyEmailCover;
+use App\Http\Controllers\donations\DonationController;
+
 use App\Http\Controllers\authentications\ResetPasswordBasic;
-use App\Http\Controllers\authentications\ResetPasswordCover;
-use App\Http\Controllers\authentications\ForgotPasswordBasic;
-use App\Http\Controllers\authentications\ForgotPasswordCover;
-use App\Http\Controllers\authentications\TwoStepsBasic;
-use App\Http\Controllers\authentications\TwoStepsCover;
+
 use App\Http\Controllers\wizard_example\Checkout as WizardCheckout;
 use App\Http\Controllers\wizard_example\PropertyListing;
 use App\Http\Controllers\wizard_example\CreateDeal;
@@ -361,3 +354,10 @@ Route::post('/users/add-update ', [UserManagement::class, 'update'])->name('user
 Route::post('/users/update-photo ', [UserManagement::class, 'update_profile'])->name('update-photo')->middleware('auth');
 Route::get('/user/view/{id}', [UserManagement::class, 'view'])->name('user-view')->middleware('auth');
 Route::post('/users/update-password ', [UserManagement::class, 'updatePassword'])->name('update-password')->middleware('auth');
+
+
+//Donation
+Route::get('/donation/donate-now', [DonationController::class, 'index'])->name('donation');
+Route::post('/donation/donate-pay', [DonationController::class, 'donateNow'])->name('donation-pay');
+Route::get('/donations/money', [DonationController::class, 'moneyDonationlist'])->name('donations-money');
+Route::get('/money-list', [DonationController::class, 'getMoneyDonation'])->name('money-list');

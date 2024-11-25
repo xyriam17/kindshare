@@ -11,14 +11,13 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('inventory', function (Blueprint $table) {
+    Schema::create('foods', function (Blueprint $table) {
       $table->id();
-      $table->enum('type', ['food', 'clothing']);
+      $table->enum('food_type', ['canned-goods', 'water', 'grains', 'biscuits', 'others']);
       $table->string('description');
       $table->integer('quantity');
       $table->string('unit')->nullable();
-      $table->date('expiry_date')->nullable(); // Only for food
-      $table->string('location');
+      $table->date('expiry_date')->nullable();
       $table->timestamps();
     });
   }
@@ -28,6 +27,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('inventory');
+    Schema::dropIfExists('foods');
   }
 };

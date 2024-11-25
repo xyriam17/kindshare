@@ -17,6 +17,7 @@ return new class extends Migration
       $table->string('food_type')->nullable();
       $table->decimal('amount', 10, 2)->nullable(); // for money donations
       $table->string('reference_no')->nullable(); // for money donations
+      $table->string('description')->nullable(); //
       $table->integer('quantity')->nullable(); // for food and clothing donations
       $table->string('unit')->nullable(); // for food and clothing donations
       $table->date('expiry_date')->nullable(); // for food donations

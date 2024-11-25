@@ -9,9 +9,10 @@ class Donations extends Model
 {
   use HasFactory;
 
+  protected $fillable = ['amount', 'status'];
 
 
-  public function donor()
+  public function donors()
   {
     return $this->belongsTo(Donors::class);
   }

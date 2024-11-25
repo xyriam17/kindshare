@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
 
     //Seed Default User
     User::create([
-      'name' => 'Merriam Mae Salas',
+      'name' => 'Merriam Mae A. Salas',
       'firstname' => 'Merriam Mae',
       'middlename' => 'A.',
       'lastname' => 'Salas',

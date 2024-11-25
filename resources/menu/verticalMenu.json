@@ -24,13 +24,23 @@
       "slug": "donations",
       "submenu": [
         {
-          "url": "donations/list",
-          "name": "Received",
-          "slug": "donations-list"
+          "url": "donations/money",
+          "name": "Money",
+          "slug": "donations-money"
+        },
+        {
+          "url": "donations/food",
+          "name": "Food",
+          "slug": "donations-food"
+        },
+        {
+          "url": "donations/inkinds",
+          "name": "Inkinds",
+          "slug": "donations-inkind"
         },
         {
           "url": "donations/distribution",
-          "name": "Distributed",
+          "name": "Charity Distribution",
           "slug": "donations-distribution"
         }
       ]
