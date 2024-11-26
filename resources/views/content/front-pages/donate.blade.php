@@ -106,7 +106,7 @@ $configData = Helper::appClasses();
             </div>
                <div class="col-md-12">
                   <label for="exampleFormControlReadOnlyInput1" class="form-label">Description</label>
-                  <textarea name="description" id="description" readonly class="form-control" value="Assorted Clothing" disabled>Assorted Clothing</textarea>
+                  <input type="text" name="description" id="description"  class="form-control readonly" readonly  value="Assorted Clothing" >
                 </div>
 
          </div>
@@ -114,7 +114,7 @@ $configData = Helper::appClasses();
           <div class="row">
             <div class="mb-4 col-md-6">
               <label for="exampleFormControlReadOnlyInput1" class="form-label">Food Type</label>
-               <select name="food-type" id="food-type" class="form-select">
+               <select name="food_type" id="food-type" class="form-select">
                 <option value="canned-goods" selected>Canned Goods</option>
                 <option value="noodles">Noodles</option>
                 <option value="water">Water</option>

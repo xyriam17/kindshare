@@ -36,8 +36,22 @@ class DatabaseSeeder extends Seeder
     ]);
 
     RunningBalance::create([
+      'balance_type' => 'collections',
       'previous_balance' => 0,
       'current_balance' => 0,
+      'overall_total' => 0,
+    ]);
+    RunningBalance::create([
+      'balance_type' => 'clothing',
+      'previous_balance' => 0,
+      'current_balance' => 0,
+      'overall_total' => 0,
+    ]);
+    RunningBalance::create([
+      'balance_type' => 'money',
+      'previous_balance' => 0,
+      'current_balance' => 0,
+      'overall_total' => 0,
     ]);
     //Seed Default User
     User::create([

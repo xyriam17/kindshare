@@ -13,8 +13,10 @@ return new class extends Migration
   {
     Schema::create('running_balance', function (Blueprint $table) {
       $table->id();
+      $table->string('balance_type')->nullable();
       $table->double('current_balance', 10, 2);
       $table->double('previous_balance', 10, 2);
+      $table->double('overall_total', 10, 2);
 
       $table->timestamps();
     });

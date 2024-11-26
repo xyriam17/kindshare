@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Donors;
 use App\Models\Donations;
 use App\Models\Inventory;
+use App\Models\RunningBalance;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -123,6 +124,7 @@ class DonationController extends Controller
       $donations->donor_id = $donor_id;
       $donations->quantity = $request->quantity;
       $donations->type = 'clothing';
+      $donations->unit = $request->unit;
       $donations->description = $request->description;
       $donations->save();
       return response()->json(
@@ -227,6 +229,229 @@ class DonationController extends Controller
         $nestedData['donor'] =  (!empty($donor->name && $donor) ? $donor->name : 'Anonymous');
         $nestedData['amount'] = $donation->amount;
         $nestedData['payment'] = 'GCASH';
+        $nestedData['date'] = date('F d, Y h:i:s A', strtotime($donation->created_at));
+        $nestedData['status'] = $donation->status;
+        $data[] = $nestedData;
+      }
+    }
+
+    if ($data) {
+      return response()->json([
+        'draw' => intval($request->input('draw')),
+        'recordsTotal' => intval($totalData),
+        'recordsFiltered' => intval($totalFiltered),
+        'code' => 200,
+        'data' => $data,
+      ]);
+    } else {
+      return response()->json([
+        'message' => 'Internal Server Error',
+        'code' => 500,
+        'data' => [],
+      ]);
+    }
+  }
+  public function foodDonationlist()
+  {
+    $total_recieved = Inventory::where('type', 'food')->where('status', 'onhand')->orWhere('status', 'donated')->sum('quantity');
+    $total_pending = Inventory::where('type', 'food')->where('status', 'pending')->sum('quantity');
+    $total_expired = Inventory::where('type', 'food')->where('expiry_date', '<=', date('Y-m-d'))->orWhere('status', 'expired')->sum('quantity');
+    return view('content.donations.food', compact('total_recieved', 'total_pending', 'total_expired'));
+  }
+  public function getFoodDonation(Request $request)
+  {
+
+
+
+    $columns = [
+      1 => 'id',
+      2 => 'item',
+      3 => 'foodtype',
+      4 => 'quantity',
+      5 => 'unit',
+      6 => 'expiry',
+      7 => 'date',
+      8 => 'status',
+    ];
+
+
+
+
+    $search = [];
+
+    $totalData = Donations::where('type', 'food')->count();
+
+    $totalFiltered = $totalData;
+
+    $limit = $request->input('length');
+    $start = $request->input('start');
+    $order = $columns[$request->input('order.0.column')];
+    $dir = $request->input('order.0.dir');
+
+
+    if (empty($request->input('search.value'))) {
+      $foods = Donations::where('type', 'food')->offset($start)
+        ->limit($limit)
+        ->orderBy('description', $dir)
+        ->get();
+    } else {
+      $search = $request->input('search.value');
+      $foods = Donations::where('type', 'food')->where('id', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->orWhere('food_type', 'LIKE', "%{$search}%")
+        ->offset($start)
+        ->limit($limit)
+        ->orderBy('description', $dir)
+        ->get();
+      $totalFiltered = Donations::where('type', 'food')->where('id', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->orWhere('food_type', 'LIKE', "%{$search}%")
+        ->count();
+    }
+
+
+    $data = [];
+
+    if (!empty($foods)) {
+
+      $ids = $start;
+
+      foreach ($foods as $donation) {
+        $donor = Donors::where('id', $donation->donor_id)->first();
+        $nestedData['id'] = $donation->id;
+        $nestedData['fake_id'] = ++$ids;
+        $nestedData['donor'] =  (!empty($donor->name && $donor) ? $donor->name : 'Anonymous');
+        $nestedData['item'] = $donation->description;
+        $nestedData['foodtype'] = $donation->food_type;
+        $nestedData['quantity'] = $donation->quantity;
+        $nestedData['unit'] = $donation->unit;
+        $nestedData['expiry'] = date('F d, Y h:i:s A', strtotime($donation->expiry_date));
+        $nestedData['date'] = date('F d, Y h:i:s A', strtotime($donation->created_at));
+        $nestedData['status'] = $donation->status;
+        $data[] = $nestedData;
+      }
+    }
+
+    if ($data) {
+      return response()->json([
+        'draw' => intval($request->input('draw')),
+        'recordsTotal' => intval($totalData),
+        'recordsFiltered' => intval($totalFiltered),
+        'code' => 200,
+        'data' => $data,
+      ]);
+    } else {
+      return response()->json([
+        'message' => 'Internal Server Error',
+        'code' => 500,
+        'data' => [],
+      ]);
+    }
+  }
+
+  public function approveDonation(Request $request)
+  {
+    $donation = Donations::find($request->donation_id);
+    $donation->status = 'approved';
+    if ($donation->save()) {
+      if ($donation->type == 'food' || $donation->type == 'clothing') {
+        $inventry = Inventory::where('donation_id', $request->donation_id)->count();
+        if ($inventry < 1) {
+          $inventory = new Inventory();
+          $inventory->type = $donation->type;
+          $inventory->donation_id = $request->donation_id;
+          $inventory->description = $donation->description;
+          $inventory->quantity = $donation->quantity;
+          $inventory->unit = $donation->unit;
+          $inventory->expiry_date = $donation->expiry_date;
+          $inventory->location = 'church storage';
+          $inventory->save();
+        }
+
+        if ($donation->type == 'clothing') {
+          $runningBalance = RunningBalance::where('balance_type', 'clothing')->first();
+          $runningBalance->update(['previous_balance' =>   $runningBalance->current_balance,  'current_balance' => $runningBalance->current_balance + $donation->quantity]);
+        }
+      }
+    }
+
+    return response()->json(['status' => 'success', 'message' => 'Donation approved successfully']);
+  }
+
+
+
+  public function clothingDonationlist()
+  {
+    $total_recieved = Inventory::where('type', 'clothing')->where('status', 'onhand')->orWhere('status', 'donated')->sum('quantity');
+    $total_pending = Inventory::where('type', 'clothing')->where('status', 'pending')->sum('quantity');
+    $total_expired = Inventory::where('type', 'clothing')->where('expiry_date', '<=', date('Y-m-d'))->orWhere('status', 'expired')->sum('quantity');
+    return view('content.donations.clothing', compact('total_recieved', 'total_pending', 'total_expired'));
+  }
+
+
+  public function getClotheDonation(Request $request)
+  {
+
+
+
+    $columns = [
+      1 => 'id',
+      2 => 'donor',
+      3 => 'item',
+      4 => 'quantity',
+      5 => 'unit',
+      6 => 'date',
+      7 => 'status',
+    ];
+
+
+
+
+    $search = [];
+
+    $totalData = Donations::where('type', 'clothing')->count();
+
+    $totalFiltered = $totalData;
+
+    $limit = $request->input('length');
+    $start = $request->input('start');
+    $order = $columns[$request->input('order.0.column')];
+    $dir = $request->input('order.0.dir');
+
+
+    if (empty($request->input('search.value'))) {
+      $foods = Donations::where('type', 'clothing')->offset($start)
+        ->limit($limit)
+        ->orderBy('description', $dir)
+        ->get();
+    } else {
+      $search = $request->input('search.value');
+      $foods = Donations::where('type', 'clothing')->where('id', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->offset($start)
+        ->limit($limit)
+        ->orderBy('description', $dir)
+        ->get();
+      $totalFiltered = Donations::where('type', 'clothing')->where('id', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->count();
+    }
+
+
+    $data = [];
+
+    if (!empty($foods)) {
+
+      $ids = $start;
+
+      foreach ($foods as $donation) {
+        $donor = Donors::where('id', $donation->donor_id)->first();
+        $nestedData['id'] = $donation->id;
+        $nestedData['fake_id'] = ++$ids;
+        $nestedData['donor'] =  (!empty($donor->name && $donor && $donor->name !== ' ') ? $donor->name : 'Anonymous');
+        $nestedData['item'] = $donation->description;
+        $nestedData['quantity'] = $donation->quantity;
+        $nestedData['unit'] = $donation->unit;
         $nestedData['date'] = date('F d, Y h:i:s A', strtotime($donation->created_at));
         $nestedData['status'] = $donation->status;
         $data[] = $nestedData;

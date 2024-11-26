@@ -11,13 +11,13 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('expenses', function (Blueprint $table) {
+    Schema::create('tithes_collections', function (Blueprint $table) {
       $table->id();
       $table->double('amount', 10, 2);
-      $table->string('description');
+      $table->string('source');
       $table->string('reference_no');
-      $table->string('status')->default('pending');
-      $table->string('fundsource');
+      $table->string('description')->nullable();
+      $table->string('status')->default('collected');
       $table->timestamps();
     });
   }
@@ -27,6 +27,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('expenses');
+    Schema::dropIfExists('tithes_collections');
   }
 };

@@ -48,7 +48,7 @@ class CheckPaymentStatus extends Command
 
       if ($status === 'paid') {
         $donation->update(['status' => 'paid']);
-        $runningBalance = RunningBalance::first();
+        $runningBalance = RunningBalance::where('balance_type', 'money')->first();
 
         $runningBalance->update(['previous_balance' =>   $runningBalance->current_balance,  'current_balance' => $runningBalance->current_balance + $donation->amount]);
       } elseif ($status === 'failed') {

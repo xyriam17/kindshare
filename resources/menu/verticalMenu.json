@@ -36,7 +36,7 @@
         {
           "url": "donations/inkinds",
           "name": "Inkinds",
-          "slug": "donations-inkind"
+          "slug": "donations-inkinds"
         },
         {
           "url": "donations/distribution",
@@ -59,18 +59,6 @@
           "url": "offerings/expenses",
           "name": "Spendings/Expenses",
           "slug": "tithes-spendings"
-        }
-      ]
-    },
-    {
-      "name": "Reports",
-      "icon": "menu-icon tf-icons ti ti-layout-grid",
-      "slug": "reports",
-      "submenu": [
-        {
-          "url": "reports/financial",
-          "name": "Financial",
-          "slug": "reports-financial"
         }
       ]
     }

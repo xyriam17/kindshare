@@ -17,6 +17,7 @@ return new class extends Migration
       $table->string('description');
       $table->integer('quantity');
       $table->string('unit')->nullable();
+      $table->string('status')->default('onhand');
       $table->date('expiry_date')->nullable(); // Only for food
       $table->string('location');
       $table->timestamps();

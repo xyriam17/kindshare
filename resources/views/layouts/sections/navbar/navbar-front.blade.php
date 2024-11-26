@@ -15,14 +15,14 @@ $activeClass = in_array($currentRouteName, $activeRoutes) ? 'active' : '';
           <i class="ti ti-menu-2 ti-lg align-middle text-heading fw-medium"></i>
         </button>
         <!-- Mobile menu toggle: End-->
-        <a href="{{url('front-pages/landing')}}" class="app-brand-link">
+        <a href="#" class="app-brand-link">
           <span class="app-brand-logo demo">@include('_partials.macros',['height'=>20,'withbg' => "fill: #fff;"])</span>
           <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1">KindShare</span>
         </a>
       </div>
       <!-- Menu logo wrapper: End -->
       <!-- Menu wrapper: Start -->
-      <div class="collapse navbar-collapse landing-nav-menu" id="navbarSupportedContent">
+      {{-- <div class="collapse navbar-collapse landing-nav-menu" id="navbarSupportedContent">
         <button class="navbar-toggler border-0 text-heading position-absolute end-0 top-0 scaleX-n1-rtl" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <i class="ti ti-x ti-lg"></i>
         </button>
@@ -216,7 +216,7 @@ $activeClass = in_array($currentRouteName, $activeRoutes) ? 'active' : '';
             <a class="nav-link fw-medium" href="{{url('/')}}" target="_blank">Admin</a>
           </li>
         </ul>
-      </div>
+      </div> --}}
       <div class="landing-menu-overlay d-lg-none"></div>
       <!-- Menu wrapper: End -->
       <!-- Toolbar: Start -->
@@ -249,7 +249,7 @@ $activeClass = in_array($currentRouteName, $activeRoutes) ? 'active' : '';
         @endif
         <!-- navbar button: Start -->
         <li>
-          <a href="{{url('/auth/login-cover')}}" class="btn btn-primary" target="_blank"><span class="tf-icons ti ti-login scaleX-n1-rtl me-md-1"></span><span class="d-none d-md-block">Login/Register</span></a>
+          <a href="{{url('/auth/login')}}" class="btn btn-primary" target="_blank"><span class="tf-icons ti ti-login scaleX-n1-rtl me-md-1"></span><span class="d-none d-md-block">Login</span></a>
         </li>
         <!-- navbar button: End -->
       </ul>
